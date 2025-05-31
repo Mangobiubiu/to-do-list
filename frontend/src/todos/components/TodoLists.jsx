@@ -9,26 +9,11 @@ import {
   Typography,
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
-import { TodoListForm } from './TodoListForm'
-
-// Simulate network
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+import TodoListForm from './TodoListForm'
+import { getAllTodoLists, saveTodoLists } from '../../services/todoListsApi'
 
 const fetchTodoLists = () => {
-  return sleep(1000).then(() =>
-    Promise.resolve({
-      '0000000001': {
-        id: '0000000001',
-        title: 'First List',
-        todos: ['First todo of first list!'],
-      },
-      '0000000002': {
-        id: '0000000002',
-        title: 'Second List',
-        todos: ['First todo of second list!'],
-      },
-    })
-  )
+  return getAllTodoLists()
 }
 
 export const TodoLists = ({ style }) => {
@@ -36,10 +21,29 @@ export const TodoLists = ({ style }) => {
   const [activeList, setActiveList] = useState()
 
   useEffect(() => {
-    fetchTodoLists().then(setTodoLists)
+    fetchTodoLists().then((result) => {
+      setTodoLists(result.data)
+    })
   }, [])
 
+  const handleSaveTodoList = async (id, { todos }) => {
+    try {
+      const listToUpdate = todoLists[id]
+      const updatedTodoLists = {
+        ...todoLists,
+        [id]: { ...listToUpdate, todos },
+      }
+  
+      await saveTodoLists(updatedTodoLists)
+      
+      setTodoLists(updatedTodoLists)
+    } catch (error) {
+      alert(error.message)
+    }
+  }
+
   if (!Object.keys(todoLists).length) return null
+
   return (
     <Fragment>
       <Card style={style}>
@@ -59,15 +63,9 @@ export const TodoLists = ({ style }) => {
       </Card>
       {todoLists[activeList] && (
         <TodoListForm
-          key={activeList} // use key to make React recreate component to reset internal state
+          key={activeList}
           todoList={todoLists[activeList]}
-          saveTodoList={(id, { todos }) => {
-            const listToUpdate = todoLists[id]
-            setTodoLists({
-              ...todoLists,
-              [id]: { ...listToUpdate, todos },
-            })
-          }}
+          saveTodoList={handleSaveTodoList}
         />
       )}
     </Fragment>
