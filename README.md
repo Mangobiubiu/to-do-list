@@ -1,3 +1,32 @@
+# Task Completion Summary
+
+## ✅ Completed Tasks
+
+### Main Task - ✅ COMPLETED
+**Persist the todo lists on the server**
+- Implemented full server-side persistence using JSON file storage
+- All todo lists and their items are automatically saved to `backend/src/storage/todoLists.json`
+- Data persists across server restarts and page refreshes
+- Added comprehensive validation for todo data structure and due dates
+
+### Additional Tasks - ✅ ALL 4 COMPLETED
+
+1. **✅ Autosave functionality**
+   - No save button required - changes are automatically saved
+
+2. **✅ Todo completion status**
+   - Added checkboxes to mark todos as completed
+
+3. **✅ Todo list completion indication**
+   - Todo lists show "Completed" chip when all items are finished
+   - Dynamic update as items are completed/uncompleted
+
+4. **✅ Due date functionality**
+   - Added MUI DatePicker with Day.js integration
+   - Added due date status chips
+   - Automatic updates when dates change (e.g. when page stays open overnight)
+   - Backend validation for date formats and validity
+
 # Sellpy web interview
 
 Welcome to Sellpy's web interview repo!
