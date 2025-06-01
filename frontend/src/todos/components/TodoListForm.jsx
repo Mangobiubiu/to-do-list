@@ -1,19 +1,33 @@
-import React, { useState } from 'react'
-import { TextField, Card, CardContent, CardActions, Button, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { TextField, Card, CardContent, CardActions, Button, Typography, Checkbox } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import todoActions from '../../constants/TodoActions'
 
-const TodoListForm = ({ todoList, saveTodoList }) => {
+const TodoListForm = ({ todoList, saveTodoLists }) => {
   const [todos, setTodos] = useState(todoList.todos)
   const [updatedTodosAction, setUpdatedTodosAction] = useState('')
+
+  useEffect(() => {
+    if (updatedTodosAction === todoActions.CREATE 
+      || updatedTodosAction === todoActions.UPDATE_COMPLETED 
+      || updatedTodosAction === todoActions.DELETE
+    ) {
+      saveTodoLists(todoList.id, { todos })
+    }
+    else {
+      const timeoutId = setTimeout(() => {
+        saveTodoLists(todoList.id, { todos })
+      }, 800)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [saveTodoLists, todoList.id, todos, updatedTodosAction])
 
   return (
     <Card sx={{ margin: '0 1rem' }}>
       <CardContent>
         <Typography component='h2'>{todoList.title}</Typography>
         <form
-          onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}
         >
           {todos.map(({ text, completed }, index) => (
@@ -73,9 +87,6 @@ const TodoListForm = ({ todoList, saveTodoList }) => {
               }}
             >
               Add Todo <AddIcon />
-            </Button>
-            <Button type='submit' variant='contained' color='primary'>
-              Save
             </Button>
           </CardActions>
         </form>

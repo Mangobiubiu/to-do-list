@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { Fragment, useState, useEffect, useCallback } from 'react'
 import {
   Card,
   CardContent,
@@ -26,21 +26,27 @@ export const TodoLists = ({ style }) => {
     })
   }, [])
 
-  const handleSaveTodoList = async (id, { todos }) => {
+  const handleSaveTodoList = useCallback(async (id, { todos }) => {
     try {
-      const listToUpdate = todoLists[id]
+      let currentTodoLists
+
+      setTodoLists((current) => {
+        currentTodoLists = current
+        return current
+      })
+
+      if (!currentTodoLists || !currentTodoLists[id]) return;
       const updatedTodoLists = {
-        ...todoLists,
-        [id]: { ...listToUpdate, todos },
+        ...currentTodoLists,
+        [id]: { ...currentTodoLists[id], todos }
       }
-  
       await saveTodoLists(updatedTodoLists)
       
       setTodoLists(updatedTodoLists)
     } catch (error) {
-      alert(error.message)
+      alert(`Auto-save failed: ${error.message}. Please refresh to sync data.`)
     }
-  }
+  }, [])
 
   if (!Object.keys(todoLists).length) return null
 
@@ -65,7 +71,7 @@ export const TodoLists = ({ style }) => {
         <TodoListForm
           key={activeList}
           todoList={todoLists[activeList]}
-          saveTodoList={handleSaveTodoList}
+          saveTodoLists={handleSaveTodoList}
         />
       )}
     </Fragment>
