@@ -68,10 +68,19 @@ app.post('/api/todo-lists', (req, res) => {
 
       // Validate todos array
       for (let i = 0; i < todoList.todos.length; i++) {
-        if (typeof todoList.todos[i] !== 'string') {
+        const todo = todoList.todos[i]
+        
+        if (typeof todo.text !== 'string') {
           return res.status(400).json({
             success: false,
-            error: `TodoList ${id}, todo at index ${i} must be a string`
+            error: `TodoList ${id}, text of todo at index ${i} must be a string`
+          })
+        }
+        
+        if (typeof todo.completed !== 'boolean') {
+          return res.status(400).json({
+            success: false,
+            error: `TodoList ${id}, completed of todo at index ${i} must be a boolean`
           })
         }
       }
