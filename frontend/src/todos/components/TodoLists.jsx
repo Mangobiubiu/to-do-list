@@ -12,6 +12,7 @@ import {
 import ReceiptIcon from '@mui/icons-material/Receipt'
 import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import TodoListForm from './TodoListForm'
+
 import { getAllTodoLists, saveTodoLists } from '../../services/todoListsApi'
 
 const fetchTodoLists = () => {
@@ -20,7 +21,7 @@ const fetchTodoLists = () => {
 
 const isListCompleted = (todos) => {
   if (todos.length === 0) return false
-  return todos.every(todo => todo.completed === true)
+  return todos.every(todo => todo.isCompleted === true)
 }
 
 export const TodoLists = ({ style }) => {
