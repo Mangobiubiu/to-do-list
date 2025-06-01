@@ -124,4 +124,5 @@ app.post('/api/todo-lists', (req, res) => {
   }
 })
 
+// eslint-disable-next-line no-console
 app.listen(PORT, () => console.log(`Todo API server running on port ${PORT}`))
