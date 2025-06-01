@@ -1,4 +1,5 @@
 import express from 'express'
+import dayjs from 'dayjs'
 import cors from 'cors'
 import { 
   getAllTodoLists,
@@ -70,6 +71,7 @@ app.post('/api/todo-lists', (req, res) => {
       for (let i = 0; i < todoList.todos.length; i++) {
         const todo = todoList.todos[i]
         
+        // Validate text
         if (typeof todo.text !== 'string') {
           return res.status(400).json({
             success: false,
@@ -77,11 +79,31 @@ app.post('/api/todo-lists', (req, res) => {
           })
         }
         
-        if (typeof todo.completed !== 'boolean') {
+        // Validate isCompleted
+        if (typeof todo.isCompleted !== 'boolean') {
           return res.status(400).json({
             success: false,
-            error: `TodoList ${id}, completed of todo at index ${i} must be a boolean`
+            error: `TodoList ${id}, isCompleted of todo at index ${i} must be a boolean`
           })
+        }
+
+        // Validate dueDate
+        if (typeof todo.dueDate !== 'string') {
+            return res.status(400).json({
+              success: false,
+              error: `TodoList ${id}, dueDate of todo at index ${i} must be a string`
+            })
+        }
+        
+        if (todo.dueDate !== '') {
+          // Use dayjs to validate the date
+          const dueDate = dayjs(todo.dueDate)
+          if (!dueDate.isValid()) {
+            return res.status(400).json({
+              success: false,
+              error: `TodoList ${id}, dueDate of todo at index ${i} is not a valid date`
+            })
+          }
         }
       }
     }
