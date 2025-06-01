@@ -7,13 +7,20 @@ import {
   ListItemText,
   ListItemIcon,
   Typography,
+  Chip,
 } from '@mui/material'
 import ReceiptIcon from '@mui/icons-material/Receipt'
+import CheckCircleIcon from '@mui/icons-material/CheckCircle'
 import TodoListForm from './TodoListForm'
 import { getAllTodoLists, saveTodoLists } from '../../services/todoListsApi'
 
 const fetchTodoLists = () => {
   return getAllTodoLists()
+}
+
+const isListCompleted = (todos) => {
+  if (todos.length === 0) return false
+  return todos.every(todo => todo.completed === true)
 }
 
 export const TodoLists = ({ style }) => {
@@ -56,14 +63,28 @@ export const TodoLists = ({ style }) => {
         <CardContent>
           <Typography component='h2'>My Todo Lists</Typography>
           <List>
-            {Object.keys(todoLists).map((key) => (
-              <ListItemButton key={key} onClick={() => setActiveList(key)}>
-                <ListItemIcon>
-                  <ReceiptIcon />
-                </ListItemIcon>
-                <ListItemText primary={todoLists[key].title} />
-              </ListItemButton>
-            ))}
+            {Object.keys(todoLists).map((key) => {
+              const todoList = todoLists[key]
+              const isCompleted = isListCompleted(todoList.todos)
+
+              return (
+                <ListItemButton key={key} onClick={() => setActiveList(key)}>
+                  <ListItemIcon>
+                    <ReceiptIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={todoList.title} />
+                  {isCompleted && (
+                    <Chip
+                      icon={<CheckCircleIcon />}
+                      label="Completed"
+                      color="success"
+                      variant="outlined"
+                      size="small"
+                    />
+                  )}
+                </ListItemButton>
+              )
+            })}
           </List>
         </CardContent>
       </Card>
